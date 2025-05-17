@@ -1,0 +1,6 @@
+env: "local" # Environment name (local, dev, prod)
+storage_path: "./storage/sso.db" # Path to the storage directory
+token_ttl: "1h" # Token time-to-live duration
+grpc:
+  port: 44044
+  timeout: 10h
