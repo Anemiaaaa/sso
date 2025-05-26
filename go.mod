@@ -1,4 +1,4 @@
-module github.com/Anemiaaaa/sso
+module sso
 
 go 1.23.2
 
