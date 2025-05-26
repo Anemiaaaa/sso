@@ -8,7 +8,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"sso/iternal/services/auth"
-	"sso/iternal/storage"
 )
 
 type Auth interface {
@@ -36,7 +35,7 @@ func (s *serverAPI) Login(ctx context.Context, req *ssov1.LoginRequest) (*ssov1.
 		if errors.Is(err, auth.ErrInvalidCredentials) {
 			return nil, status.Error(codes.InvalidArgument, "failed to login")
 		}
-		println("Login error:", err.Error())
+
 		return nil, status.Error(codes.Internal, "failed to login")
 	}
 
@@ -52,7 +51,7 @@ func (s *serverAPI) Register(ctx context.Context, req *ssov1.RegisterRequest) (*
 
 	userID, err := s.auth.Register(ctx, req.GetEmail(), req.GetPassword())
 	if err != nil {
-		if errors.Is(err, storage.ErrUserExists) {
+		if errors.Is(err, auth.ErrUserAlreadyExists) {
 			return nil, status.Error(codes.AlreadyExists, "user already exists")
 		}
 
@@ -71,7 +70,7 @@ func (s *serverAPI) IsAdmin(ctx context.Context, req *ssov1.IsAdminRequest) (*ss
 
 	isAdmin, err := s.auth.IsAdmin(ctx, req.GetUserId())
 	if err != nil {
-		if errors.Is(err, storage.ErrUserNotFound) {
+		if errors.Is(err, auth.ErrUserNotFound) {
 			return nil, status.Error(codes.NotFound, "user not found")
 		}
 
